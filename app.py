@@ -1,13 +1,13 @@
 import time
 
-from app.model import OllamaModel
-from app.rag import AgoraRAG
-from app.vector_store import ChromaDB
+from infra.model import OllamaModel
+from infra.vector_store import ChromaDB
+from usecase.rag import AgoraRAGUseCase
 
 if __name__ == "__main__":
     vector_store = ChromaDB()
     gen_model = OllamaModel()
-    rag = AgoraRAG(vector_store, gen_model)
+    rag = AgoraRAGUseCase(vector_store, gen_model)
 
     print(f"\nWelcome to AGORA AI Governance Chat Assistant!"
           f"\nPowered by HuggingFace MpNet-Base-v2 & Ollama Mini 3.5)\n")
