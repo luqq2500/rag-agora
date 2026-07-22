@@ -9,12 +9,12 @@ from langchain_huggingface import HuggingFaceEmbeddings
 base_path = Path(__file__).resolve().parent.parent
 chroma_persists_path = base_path / "dev" / "assets" / "db" / "chroma"
 
-class VectorStore(ABC):
+class VectorRepository(ABC):
     @abstractmethod
     def search(self, query: str, strategy: str)->Optional[list[Document]]:
         pass
 
-class ChromaDB(VectorStore):
+class ChromaDB(VectorRepository):
     def __init__(self, persist_path: str= chroma_persists_path, collection_name: str = 'agora_documents', embed_model:str= 'sentence-transformers/all-mpnet-base-v2'):
         if not os.path.exists(chroma_persists_path):
             raise FileNotFoundError(f"File to persistent paths not found.")

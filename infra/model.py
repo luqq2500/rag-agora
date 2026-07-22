@@ -3,12 +3,12 @@ from abc import ABC, abstractmethod
 from langchain_core.messages import SystemMessage, HumanMessage
 from langchain_ollama import ChatOllama
 
-class GenerationModel(ABC):
+class ModelService(ABC):
     @abstractmethod
     def invoke(self, system_prompt: str, user_prompt: str):
         pass
 
-class OllamaModel(GenerationModel):
+class OllamaModel(ModelService):
     def __init__(self, model: str='phi3.5:latest', temperature: float=0.3):
         try:
             self.model = ChatOllama(model=model, temperature=temperature)
@@ -19,6 +19,4 @@ class OllamaModel(GenerationModel):
         prompts = [SystemMessage(system_prompt),HumanMessage(user_prompt)]
         for chunk in self.model.stream(prompts):
             yield chunk.content
-
-
 

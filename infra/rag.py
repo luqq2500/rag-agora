@@ -3,14 +3,14 @@ from typing import Optional
 
 from langchain_core.documents import Document
 
-from infra.model import GenerationModel
-from infra.vector_store import VectorStore
+from infra.model import ModelService
+from infra.repository import VectorRepository
 
 
-class AgoraRAGUseCase:
-    def __init__(self, vector_store: VectorStore, gen_model: GenerationModel):
-        self.vector_store = vector_store
-        self.gen_model = gen_model
+class RAGService:
+    def __init__(self, repository: VectorRepository, model: ModelService):
+        self.repository = repository
+        self.model = model
         self.instruction = """
         You are Agora, a sophisticated AI Governance Advisor. Your tone is professional, thoughtful, and articulate, similar to a high-level policy researcher at a leading institute. 
         GUIDELINES:
@@ -22,7 +22,7 @@ class AgoraRAGUseCase:
         """
 
     def run(self, query: str):
-        retrieval: Optional[list[Document]] = self.vector_store.search(
+        retrieval: Optional[list[Document]] = self.repository.search(
             query=query,
             strategy='mmr'
         )
@@ -31,8 +31,7 @@ class AgoraRAGUseCase:
         context_prompt = f"CONTEXTS: \n{', '.join(contexts)}"
         query_prompt = f"QUERY: {query}."
         user_prompt = f"{context_prompt}. {query_prompt}"
-
-        for token in self.gen_model.invoke(system_prompt=self.instruction, user_prompt=user_prompt):
+        for token in self.model.invoke(system_prompt=self.instruction, user_prompt=user_prompt):
             print(token, end="", flush=True)
         print("\n")
 
