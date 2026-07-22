@@ -1,4 +1,4 @@
-# RAG for AGORA AI Governance Documents (Ollama Phi-3.5-Mini, HF MPNet-V2)
+# RAG for AGORA AI Governance Research Assistant (Ollama Phi-3.5-Mini, HF MPNet-V2)
 
 ## Output example:
 
@@ -35,7 +35,7 @@ See contents:
    - Context injection: Adding document's overview and usecase semantic as high-level context into text content.
    - Chunking: Chunk large texts into smaller chunks, with chunk overlaps.
    - Metadata injection: Adding semantic text metadata include unique identifier (AGORA Document ID), categories (Authorities, usecases), and chunk portions. 
-- **Injection**:
+- **Ingestion**:
   - Utilize Chroma DB as vector database for its vector search, embeded embedding function, and file-based database capability.
   - Stream documents using Python's lazy iterator 'Generator' for efficient memory use.
   - Add all documents entities with embedding models into vector database.
@@ -64,8 +64,25 @@ git lfs pull
 # Install required dependencies
 pip install -r requirements.txt
 ```
+3. **Ollama Installation & Setup**
+- **Windows**
+```bash
+# Install Ollama via PowerShell (Run as Administrator)
+irm https://ollama.com | iex
 
-3. **Run application**
+# Pull required model Phi-3.5-Mini
+ollama pull phi3.5
+```
+- **Linux & MacOS**
+```bash
+# Install Ollama via PowerShell (Run as Administrator)
+curl -fsSL https://ollama.com/install.sh | sh
+
+# Pull required model Phi-3.5-Mini
+ollama pull phi3.5
+```
+ 
+4. **Run application**
 ```bash
 python -m app.main
 ```
