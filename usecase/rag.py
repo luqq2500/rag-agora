@@ -3,11 +3,11 @@ from typing import Optional
 
 from langchain_core.documents import Document
 
-from app.model import GenerationModel
-from app.vector_store import VectorStore
+from infra.model import GenerationModel
+from infra.vector_store import VectorStore
 
 
-class AgoraRAG:
+class AgoraRAGUseCase:
     def __init__(self, vector_store: VectorStore, gen_model: GenerationModel):
         self.vector_store = vector_store
         self.gen_model = gen_model
