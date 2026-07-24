@@ -20,3 +20,8 @@ class OllamaModel(ModelService):
         for chunk in self.model.stream(prompts):
             yield chunk.content
 
+def wire_model(model_name: str, temperature: float=0.3):
+    if model_name == 'phi3.5:latest':
+        return OllamaModel(model='phi3.5:latest', temperature=temperature)
+    else:
+        raise ValueError(f"{model_name} is not supported")

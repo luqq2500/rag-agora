@@ -1,9 +1,9 @@
 import time
 
-from infra.rag import RAGService
+from core.rag import AgoraRagService
 
 class AskRagAgoraUseCase:
-    def __init__(self, rag_service: RAGService):
+    def __init__(self, rag_service: AgoraRagService):
         self.service = rag_service
 
     def run(self):

@@ -39,3 +39,9 @@ class ChromaDB(VectorRepository):
             return self.chroma.max_marginal_relevance_search(query=query, k=k, fetch_k=k*4, lambda_mult=0.7)
         else:
             None
+
+def wire_repository(repository: str, collection_name: str)->VectorRepository:
+    if repository == 'chroma':
+        return ChromaDB(collection_name=collection_name)
+    else:
+        raise ValueError(f"Repository {repository} is not supported.")
