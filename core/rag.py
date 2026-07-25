@@ -22,7 +22,7 @@ class AgoraRagService(RAGService):
         retrieval: Optional[list[Document]] = self.repository.similarity_search(
             query=query,
             strategy='mmr',
-            k=10
+            k=4
         )
         contexts = [f"Metadata: {document.metadata}\nContent: {document.page_content}" for document in retrieval]
         context_prompt = f"CONTEXTS: \n{', '.join(contexts)}"
