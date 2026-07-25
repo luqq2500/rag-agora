@@ -11,7 +11,7 @@ chroma_persists_path = base_path / "dev" / "assets" / "db" / "chroma"
 
 class VectorRepository(ABC):
     @abstractmethod
-    def search(self, query: str, strategy: str)->Optional[list[Document]]:
+    def similarity_search(self, query: str, strategy: str, k: int)->Optional[list[Document]]:
         pass
 
 class ChromaDB(VectorRepository):
@@ -32,7 +32,7 @@ class ChromaDB(VectorRepository):
         except Exception as e:
             raise RuntimeError(f'Failed to initialize chroma: {e}')
 
-    def search(self, query: str, strategy: str, k: int=3)->Optional[list[Document]]:
+    def similarity_search(self, query: str, strategy: str='mmr', k: int=3)->Optional[list[Document]]:
         if strategy == 'similarity':
             return self.chroma.similarity_search(query=query,k=k)
         elif strategy == 'mmr':

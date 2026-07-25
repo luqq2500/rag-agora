@@ -5,13 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ae4afc6a-526b-4094-893d-46c731d01d92" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/core/instruction.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/infra/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/infra/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/infra/rag.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/rag.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/infra/repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/repository.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/usecase.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/usecase.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/rag.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/rag.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/repository.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
