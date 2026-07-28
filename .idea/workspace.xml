@@ -4,7 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ae4afc6a-526b-4094-893d-46c731d01d92" name="Changes" comment="" />
+    <list default="true" id="ae4afc6a-526b-4094-893d-46c731d01d92" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/core/agent.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/rag.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/rag.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/repository.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/usecase.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/usecase.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -13,8 +22,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Jupyter Notebook" />
         <option value="Python Script" />
+        <option value="Jupyter Notebook" />
       </list>
     </option>
   </component>
