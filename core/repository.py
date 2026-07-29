@@ -20,7 +20,7 @@ class AgoraDocumentVectorRepository(ABC):
     def get_metadata(self)-> dict[str, Any]:
         pass
 
-class DocumentRepositoryChromaDB(AgoraDocumentVectorRepository):
+class VectorRepositoryChromaDB(AgoraDocumentVectorRepository):
     def __init__(self, persist_path: str= chroma_persists_path, collection_name: str = 'agora_documents', embed_model:str= 'sentence-transformers/all-mpnet-base-v2'):
         if not os.path.exists(chroma_persists_path):
             raise FileNotFoundError(f"File to persistent paths not found.")

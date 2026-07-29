@@ -7,11 +7,11 @@ class ChatAgoraResearchAssistant:
         self.service = service
 
     def run(self):
-        print(f"\nWelcome to AGORA AI Governance Chat Assistant!")
+        print(f"\nWelcome to AGORA AI Governance Research Assistant!")
         while True:
             request = input("Enter question ('quit' to exit): ")
             if request == "quit":
-                print(f"Thank you for using AGORA AI Chat Assistant and see you again!")
+                print(f"Thank you and see you again!")
                 break
             print(f'\n🔍 Searching, 📜 retrieving documents, and 📝 preparing response...\n')
             start = time.time()

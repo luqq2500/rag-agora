@@ -17,7 +17,7 @@ class AgoraResearchAssistantService(ABC):
     def run(self, query: str)-> Generator[str, None, None]:
         pass
 
-class AgenticRAG(AgoraResearchAssistantService):
+class Agentic(AgoraResearchAssistantService):
     def __init__(self, llm: BaseChatModel, tools: list[Callable[..., Any]]):
         self.llm = llm.bind_tools(tools)
         self.tools = tools
@@ -53,10 +53,10 @@ class AgenticRAG(AgoraResearchAssistantService):
         return workflow.compile()
 
 class RAG(AgoraResearchAssistantService):
-    def __init__(self, repository: AgoraDocumentVectorRepository, model: BaseChatModel, instruction: str):
+    def __init__(self, repository: AgoraDocumentVectorRepository, model: BaseChatModel):
         self.model = model
         self.repository = repository
-        self.instruction = instruction
+        self.instruction = wire_llm_system_instruction()
 
     def run(self, query: str):
         retrieval = self.retrieve(query)
