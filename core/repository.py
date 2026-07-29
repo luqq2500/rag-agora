@@ -43,7 +43,7 @@ class VectorRepositoryChromaDB(AgoraDocumentVectorRepository):
         """
         Performs standard semantic vector search to retrieve documents closest to the query.
 
-        Returns top-k results with highest similarity, prioritizing exact relevance over diversity.
+        Returns top-k results with the highest similarity, prioritizing exact relevance over diversity.
 
         Guidance:
         - Use for direct, specific matches where redundant information across documents is acceptable.
