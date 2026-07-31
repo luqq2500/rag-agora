@@ -10,7 +10,7 @@ class ChatAgoraResearchAssistant:
         print(f"\nWelcome to AGORA AI Governance Research Assistant!")
         while True:
             request = input("Enter question ('quit' to exit): ")
-            if request == "quit":
+            if request.strip() == "quit":
                 print(f"Thank you and see you again!")
                 break
             print(f'\n🔍 Searching, 📜 retrieving documents, and 📝 preparing response...\n')

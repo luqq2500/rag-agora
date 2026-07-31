@@ -1,12 +1,12 @@
+import datetime
 from pathlib import Path
 from typing import Callable, Any
 
 from dotenv import load_dotenv
+from langchain_community.tools import TavilySearchResults
 from langchain_core.language_models import BaseChatModel
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_ollama import ChatOllama
-
-from core.repository import AgoraDocumentVectorRepository, VectorRepositoryChromaDB
 
 
 def wire_llm_system_instruction(file_name: str= 'instruction.md'):
@@ -32,35 +32,41 @@ class ModelRegistry:
         return list(self.registry.keys())
 
 class ToolRegistry:
-    def __init__(self, document_repository: AgoraDocumentVectorRepository):
-        self.registry: dict[str, Callable[..., Any]] = {
-            document_repository.get_metadata.__name__: document_repository.get_metadata,
-            document_repository.ranking_search.__name__: document_repository.ranking_search
-        }
-        self.active_tools = [tool for tool in self.registry.values()] # default take all tools in the registry
+    def __init__(self):
+        self.registry: dict[str, Callable[..., Any]] = {}
 
-    def get_supported_tools(self):
-        return self.registry.keys()
-
-    def get_active_tools(self):
-        return self.active_tools
-
-    def set_active_tools(self, new_active_tools:list[str]):
-        invalid_tools = set(new_active_tools) - set(self.registry)
-        if invalid_tools:
-            raise ValueError(f'{new_active_tools} is not supported')
-        self.active_tools = [self.registry[tool_name] for tool_name in new_active_tools]
+    def get_tools(self):
+        return list(self.registry.values())
 
     def add_tools(self, methods: list[Callable[..., Any]]):
         for method in methods:
-            if not method.__doc__:
-                raise RuntimeWarning(f'Docstring not found in method: {method.__name__}')
-            if method in self.registry.values():
-                raise RuntimeWarning(f'{method.__name__} has already been registered in registry.')
-            if not method.__name__.startswith("__"):
-                self.registry[method.__name__] = method
+            if hasattr(method, "name") and hasattr(method, "description"):
+                name =  method.name
+                doc = method.description
+            else:
+                name = method.__name__
+                doc = method.__doc__
 
+            if not name or name.startswith("__"):
+                continue
+            if not doc:
+                raise ValueError(f'Tool {name} does not have docstring.')
+            if name in self.registry:
+                raise RuntimeWarning(f'Tool {name} is already registered.')
+
+            self.registry[name] = method
 
 def wire_tools_registry():
-    repository = VectorRepositoryChromaDB()
-    return ToolRegistry(repository)
+    load_dotenv()
+    tool_registry = ToolRegistry()
+
+    def get_date_time():
+        """find current date-time"""
+        return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    tool_registry.add_tools([
+        TavilySearchResults(max_results=10),
+        get_date_time
+    ])
+
+    return tool_registry
