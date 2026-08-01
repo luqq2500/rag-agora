@@ -21,6 +21,7 @@ class Agentic(AgoraResearchAssistantService):
     def __init__(self, llm: BaseChatModel, tools: list[Callable[..., Any]]):
         if not tools:
             raise ValueError(f"Agents are not given any tools.")
+        self.base_llm = llm
         self.llm = llm.bind_tools(tools)
         self.tools = tools
         self.system_instruction = wire_llm_system_instruction()
@@ -50,6 +51,7 @@ class Agentic(AgoraResearchAssistantService):
         initial_input = {"messages": ("user", prompt)}
         result = self.environment.invoke(initial_input)
         clean_message = result["messages"][-1]
+        print("\n")
         print(clean_message.text, end="", flush=True)
         print("\n")
 

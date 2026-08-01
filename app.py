@@ -6,9 +6,6 @@ from InquirerPy import inquirer
 
 def main():
     model_registry = ModelRegistry()
-    repository: AgoraDocumentVectorRepository = VectorRepositoryChromaDB()
-    tool_registry = wire_tools_registry()
-    tool_registry.add_tools([repository.get_metadata, repository.ranking_search])
 
     select_mode = inquirer.select(
         message="Select AGORA Assistant mode: ",
@@ -23,8 +20,10 @@ def main():
     model = model_registry.construct_model(select_model)
 
     if select_mode == "RAG":
-        service = RAG(repository, model)
+        document_repository = VectorRepositoryChromaDB()
+        service = RAG(document_repository, model)
     elif select_mode == "Agentic":
+        tool_registry = wire_tools_registry()
         service = Agentic(model, tool_registry.get_tools())
     else:
         raise Exception("Invalid mode")

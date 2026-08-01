@@ -17,7 +17,7 @@ class AgoraDocumentVectorRepository(ABC):
     def ranking_search(self, query: str, k: int, fetch_k: int, lambda_mult: float, filter: Optional[dict[str, Any]])->list[Document]:
         pass
     @abstractmethod
-    def get_metadata(self)-> dict[str, Any]:
+    def get_search_filters(self)-> dict[str, Any]:
         pass
 
 class VectorRepositoryChromaDB(AgoraDocumentVectorRepository):
@@ -67,7 +67,7 @@ class VectorRepositoryChromaDB(AgoraDocumentVectorRepository):
         """
         return self.chroma.max_marginal_relevance_search(query=query, k=k, fetch_k=fetch_k, lambda_mult=lambda_mult, filter=filter)
 
-    def get_metadata(self)->dict[str, Any]:
+    def get_search_filters(self)->dict[str, Any]:
         """
         Retrieves all unique metadata keys and available categorical values present in the repository.
 
@@ -94,6 +94,9 @@ class VectorRepositoryChromaDB(AgoraDocumentVectorRepository):
                     value = str(values)
                     if value not in unique_metadata[key]:
                         unique_metadata[key].append(value)
+
+        exclude_keys = {"agora_id", "segment", "current_chunk", "total_chunks"}
+        unique_metadata = {k: v for k, v in unique_metadata.items() if k not in exclude_keys}
         self.cached_metadata = unique_metadata
         return unique_metadata
 

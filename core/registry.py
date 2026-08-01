@@ -8,6 +8,8 @@ from langchain_core.language_models import BaseChatModel
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_ollama import ChatOllama
 
+from core.repository import VectorRepositoryChromaDB
+
 
 def wire_llm_system_instruction(file_name: str= 'instruction.md'):
     base_dir = Path(__file__).parent.resolve()
@@ -50,21 +52,23 @@ class ToolRegistry:
             if not name or name.startswith("__"):
                 continue
             if not doc:
-                raise ValueError(f'Tool {name} does not have docstring.')
+                raise ValueError(f'Tool {name} does not have docstring for description.')
             if name in self.registry:
                 raise RuntimeWarning(f'Tool {name} is already registered.')
-
             self.registry[name] = method
 
 def wire_tools_registry():
     load_dotenv()
     tool_registry = ToolRegistry()
+    repository = VectorRepositoryChromaDB()
 
     def get_date_time():
         """find current date-time"""
         return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     tool_registry.add_tools([
+        repository.get_search_filters,
+        repository.ranking_search,
         TavilySearchResults(max_results=10),
         get_date_time
     ])
