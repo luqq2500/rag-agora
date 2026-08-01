@@ -63,7 +63,14 @@ def wire_tools_registry():
     repository = VectorRepositoryChromaDB()
 
     def get_date_time():
-        """find current date-time"""
+        """
+        Return the current local date and time as "YYYY-MM-DD HH:MM:SS".
+
+        Takes no arguments. This is the only way to know today's date — do not assume
+        it. Call it before any claim that depends on the present moment: whether a
+        deadline has passed, how long an instrument has been in force, whether a
+        compliance phase has begun, or how old a document is.
+        """
         return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     tool_registry.add_tools([

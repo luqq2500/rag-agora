@@ -55,26 +55,81 @@ class VectorRepositoryChromaDB(AgoraDocumentVectorRepository):
 
     def ranking_search(self, query: str, k: int=4, fetch_k: int=20, lambda_mult: float=0.5, filter: Optional[dict[str, Any]]=None) -> Optional[list[Document]]:
         """
-        Performs Maximal Marginal Relevance (MMR) search to balance semantic relevance and document diversity.
+        Search the governance corpus. Returns `k` document chunks selected by Maximal
+        Marginal Relevance: `fetch_k` candidates are retrieved by embedding similarity,
+        then `k` are chosen from them trading off similarity against diversity.
 
-        Guidance:
-        - For broad topics: Increase `fetch_k` (e.g., 40-60) and lower `lambda_mult` (e.g., 0.2-0.4) for broader coverage.
-        - For narrow queries: Increase `lambda_mult` (e.g., 0.7-1.0) to focus strictly on direct similarity.
-        - Ensure `fetch_k` is significantly larger than `k`.
-        - The `filter` argument accepts ONE key-value pair (e.g., {"sectors": "government"}).
-        - For comparative or multi-domain analysis, generate separate tool calls in parallel for each metadata scope.
+        Parameters:
+        - `query`: the search text. Embedded and matched against chunk embeddings, so
+          phrase it as the substance you want to find, not as a question.
+        - `k`: how many chunks are returned. Raise it when a provision is long or split
+          across chunks; keep it low when confirming a specific fact. Large values
+          crowd out reasoning space and may truncate on small-context models.
+        - `fetch_k`: candidate pool size. Must be substantially larger than `k` or MMR
+          has nothing to select among and degenerates into plain similarity search.
+        - `lambda_mult`: 0.0 to 1.0. High (0.7–1.0) keeps results tight to the query;
+          low (0.2–0.4) spreads them across distinct documents. Use high values when
+          you know what you are looking for, low values when surveying an unfamiliar
+          topic.
+        - `filter`: optional metadata constraint. See below.
+
+        Suggested settings:
+        - Precise lookup of one provision or defined term: k=4-6, fetch_k=20,
+          lambda_mult=0.7-1.0.
+        - Wide survey of an unfamiliar topic: k=8-10, fetch_k=40-60,
+          lambda_mult=0.2-0.4.
+
+        Filter constraints:
+        - Accepts exactly ONE key-value pair, e.g. {"sectors": "government"}. Lists
+          such as {"sectors": ["government", "private"]} are invalid, as is combining
+          two different keys in one call.
+        - To cover several values, issue separate calls, one per value. Calls that do
+          not depend on each other's results should be emitted together in a single
+          message: they then execute as one batch.
+        - Matching is exact string equality. Some fields store several values joined
+          into one string, so a filter on one value alone will miss documents that do
+          contain it. A filtered search that returns nothing is therefore weak
+          evidence about the corpus — re-run unfiltered before drawing any conclusion
+          about coverage.
+        - Use `get_search_filters` to obtain valid keys and values. Never guess them.
+
+        Returns chunks with their metadata. Nearest matches are returned regardless of
+        whether anything relevant exists; there is no relevance floor. Inspect what
+        comes back rather than assuming a high rank implies a match.
 
         """
         return self.chroma.max_marginal_relevance_search(query=query, k=k, fetch_k=fetch_k, lambda_mult=lambda_mult, filter=filter)
 
     def get_search_filters(self)->dict[str, Any]:
         """
-        Retrieves all unique metadata keys and available categorical values present in the repository.
+        List the metadata keys and values available for filtering corpus searches.
+        Call this before any filtered search and build filters only from what it
+        returns.
 
-        Guidance:
-        - Call this tool BEFORE performing `ranking_search` or `similarity_search` if the query implies structured filtering
-          (e.g., searching by specific authors, regions, sectors, or document types).
-        - Use the output keys and values to build valid `filter` dictionaries. Do not invent or guess filter keys.
+        Filterable keys:
+        - `authority`: the enacting body — a US state, a federal department, a
+          national government, or an international organization.
+        - `status`: one of "Enacted", "Proposed", "Defunct".
+        - `collection`: broad document family, e.g. US federal laws, US state and
+          local laws, Chinese law and policy, corporate policies and commitments.
+        - `sectors`: "government" or "private".
+        - `strategies`, `applications`, `risks`, `harms`, `incentives`: analytical
+          taxonomy applied across the corpus.
+
+        Also returned but not usefully filterable: `agora_id`, `segment`,
+        `current_chunk`, `total_chunks` are chunking bookkeeping and should be
+        ignored.
+
+        Two caveats about the values returned:
+        - Some documents carry several values in one field, stored joined into a
+          single string. An exact-match filter on one value alone will not match
+          those documents.
+        - Values containing commas are split when listed here, so a few entries are
+          fragments of longer values that were never stored in that form and cannot
+          match anything.
+
+        Treat filters as an optimization that narrows a search, never as an
+        authoritative statement of what the corpus contains.
         """
         if self.cached_metadata is not None:
             return self.cached_metadata
